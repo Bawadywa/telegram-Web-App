@@ -146,28 +146,6 @@
       }
     }
 
-    .date-field { position: relative; }
-
-    /* .date-field input[type="date"] { padding-left: 44px; } */
-
-    /* Show overlay only when value is empty */
-    .date-field input[type="date"][value=""] + .date-placeholder {
-    display: flex;
-    }
-
-    .date-placeholder {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: var(--hint);
-    font-size: 15px;
-    align-items: center;
-    gap: 6px;
-    display: none; /* default hidden */
-    }
-
 
     button {
       width: 100%;
@@ -201,12 +179,8 @@
   <input id="phone" placeholder="+380..." />
 
   <label>Date</label>
-  <div class="date-field">
   <input id="date" type="date" required />
-  <span class="date-placeholder">
-    📅 Select date
-  </span>
-  </div>
+
 
   <label>Category</label>
   <select id="category">
