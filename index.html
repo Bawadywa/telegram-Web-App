@@ -88,6 +88,11 @@
       color: var(--text);
     }
 
+    input[type="date"] {
+      height: 44px;               /* 👈 consistent tap-friendly height */
+      line-height: 44px;          /* 👈 centers text vertically */
+      box-sizing: border-box;
+    }
 
     /* ===============================
       FOCUS STATE
@@ -148,6 +153,7 @@
 
     .date-field { position: relative; }
 
+
     /* .date-field input[type="date"] { padding-left: 44px; } */
 
     /* Placeholder overlay */
@@ -169,12 +175,23 @@
       display: none;
     }
 
-    /* OPTIONAL: hide overlay on desktop if you prefer native dd/mm/yyyy hint */
-    @media (min-width: 768px){
-      /* comment this block out if you want overlay on desktop too */
-      .date-placeholder { display: none !important; }
-    }
+        /* default: hide overlay (desktop) */
+    .date-placeholder { display: none; }
 
+    /* enable overlay on touch devices (mobile/tablet) */
+    @media (hover: none) and (pointer: coarse) {
+      .date-placeholder { display: flex; }
+
+      /* hide overlay when date selected */
+      .date-field input[type="date"]:valid + .date-placeholder {
+        display: none;
+      }
+
+      /* also hide while interacting */
+      .date-field:focus-within .date-placeholder {
+        display: none;
+      }
+    }
 
     button {
       width: 100%;
@@ -224,7 +241,7 @@
   <label>Notes</label>
   <textarea id="notes" rows="4" placeholder="Anything important..."></textarea>
 
-  
+
   <button id="send">Send</button>
   <div class="hint" id="themeHint"></div>
 
