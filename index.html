@@ -177,16 +177,17 @@
         box-sizing: border-box;
       }
 
-      /* Hide overlay once a date is selected */
-      .date-field input[type="date"]:valid + .date-placeholder {
-        display: none;
-      }
-
       /* Hide overlay while interacting (just in case) */
       .date-field:focus-within .date-placeholder {
         display: none;
       }
+
+      .date-field.has-value .date-placeholder {
+        display: none;
+      }
     }
+
+    
 
 
     button {
@@ -222,7 +223,7 @@
 
   <label>Date</label>
   <div class="date-field" id="dateWrap">
-  <input id="date" type="date" />
+  <input id="date" type="date" required/>
   <span class="date-placeholder">📅 Select date</span>
   </div>
 
