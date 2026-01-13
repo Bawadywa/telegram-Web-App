@@ -5,10 +5,72 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
-    body { font-family: system-ui, Arial; padding: 16px; padding-right: 25px; }
+    :root{
+      --bg: #ffffff;
+      --text: #111111;
+      --hint: #6b7280;
+      --link: #2f80ed;
+      --button: #2ea6ff;
+      --button_text: #ffffff;
+      --secondary_bg: #f3f4f6;
+
+      --field_bg: #ffffff;
+      --field_border: rgba(0,0,0,.15);
+      --field_focus: rgba(46,166,255,.35);
+      --radius: 12px;
+    }
+
+    body {
+      font-family: system-ui, Arial;
+      padding: 16px;
+      padding-right: 25px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    h3 { margin: 0 0 12px; }
+
     label { display:block; margin: 12px 0 6px; font-weight: 600; }
-    input, select, textarea, button { width: 100%; padding: 10px; font-size: 16px; }
-    button { margin-top: 16px; }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--field_bg);
+      border: 1px solid var(--field_border);
+      border-radius: var(--radius);
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--hint); }
+
+    input:focus, select:focus, textarea:focus {
+      box-shadow: 0 0 0 4px var(--field_focus);
+      border-color: var(--button);
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 16px;
+      border: none;
+      border-radius: var(--radius);
+      background: var(--button);
+      color: var(--button_text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:active { transform: translateY(1px); }
+
+    .hint {
+      color: var(--hint);
+      font-size: 13px;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
@@ -34,11 +96,47 @@
   <textarea id="notes" rows="4" placeholder="Anything important..."></textarea>
 
   <button id="send">Send</button>
+  <div class="hint" id="themeHint"></div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
+
+    function applyTheme() {
+      const p = tg.themeParams || {};
+      const scheme = tg.colorScheme; // "light" | "dark"
+
+      // Telegram theme params (may not include all keys on every client)
+      const bg = p.bg_color || (scheme === "dark" ? "#0f0f10" : "#ffffff");
+      const text = p.text_color || (scheme === "dark" ? "#ffffff" : "#111111");
+      const hint = p.hint_color || (scheme === "dark" ? "#a1a1aa" : "#6b7280");
+      const button = p.button_color || "#2ea6ff";
+      const buttonText = p.button_text_color || "#ffffff";
+      const secondaryBg = p.secondary_bg_color || (scheme === "dark" ? "#1c1c1e" : "#f3f4f6");
+
+      // Derive field colors from available params
+      const fieldBg = secondaryBg;
+      const border = scheme === "dark" ? "rgba(255,255,255,.14)" : "rgba(0,0,0,.15)";
+      const focus = scheme === "dark" ? "rgba(46,166,255,.28)" : "rgba(46,166,255,.35)";
+
+      const css = document.documentElement.style;
+      css.setProperty("--bg", bg);
+      css.setProperty("--text", text);
+      css.setProperty("--hint", hint);
+      css.setProperty("--button", button);
+      css.setProperty("--button_text", buttonText);
+      css.setProperty("--secondary_bg", secondaryBg);
+      css.setProperty("--field_bg", fieldBg);
+      css.setProperty("--field_border", border);
+      css.setProperty("--field_focus", focus);
+
+      const hintEl = document.getElementById("themeHint");
+      if (hintEl) hintEl.textContent = `Theme: ${scheme}`;
+    }
+
+    applyTheme();
+    tg.onEvent("themeChanged", applyTheme);
 
     document.getElementById("send").onclick = () => {
       const data = {
@@ -49,7 +147,6 @@
         notes: document.getElementById("notes").value.trim()
       };
 
-      // simple validation
       if (!data.name || !data.phone || !data.date) {
         tg.showAlert("Please fill Name, Phone, and Date.");
         return;
