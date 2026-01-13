@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body { font-family: system-ui, Arial; padding: 16px; }
+    label { display:block; margin: 12px 0 6px; font-weight: 600; }
+    input, select, textarea, button { width: 100%; padding: 10px; font-size: 16px; }
+    button { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h3>Order form</h3>
+
+  <label>Name</label>
+  <input id="name" placeholder="Your name" />
+
+  <label>Phone</label>
+  <input id="phone" placeholder="+380..." />
+
+  <label>Date</label>
+  <input id="date" type="date" />
+
+  <label>Category</label>
+  <select id="category">
+    <option value="wheat">Wheat</option>
+    <option value="corn">Corn</option>
+    <option value="sunflower">Sunflower</option>
+  </select>
+
+  <label>Notes</label>
+  <textarea id="notes" rows="4" placeholder="Anything important..."></textarea>
+
+  <button id="send">Send</button>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    document.getElementById("send").onclick = () => {
+      const data = {
+        name: document.getElementById("name").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        date: document.getElementById("date").value,
+        category: document.getElementById("category").value,
+        notes: document.getElementById("notes").value.trim()
+      };
+
+      // simple validation
+      if (!data.name || !data.phone || !data.date) {
+        tg.showAlert("Please fill Name, Phone, and Date.");
+        return;
+      }
+
+      tg.sendData(JSON.stringify(data));
+      tg.close();
+    };
+  </script>
+</body>
+</html>
