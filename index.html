@@ -244,6 +244,7 @@
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
+    tg.requestFullscreen();
 
     function applyTheme() {
       const p = tg.themeParams || {};
